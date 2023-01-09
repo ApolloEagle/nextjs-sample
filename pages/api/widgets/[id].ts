@@ -1,5 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
+type Error = {
+  error: string;
+};
+
 const widgets: Widget[] = [
   { id: 1, name: "Alpha", purchases: 100 },
   { id: 2, name: "Beta", purchases: 200 },
@@ -9,13 +13,13 @@ const widgets: Widget[] = [
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Widget>
+  res: NextApiResponse<Widget | Error>
 ) {
   const { id } = req.query;
   const widget = widgets.find((item) => item.id === Number(id));
   if (widget) {
     res.status(200).json(widget);
   } else {
-    res.status(200).redirect(307, "/api/widgets");
+    res.status(200).json({ error: "Widget does not exist." });
   }
 }
